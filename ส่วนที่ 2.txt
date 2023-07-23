@@ -69,9 +69,7 @@ type date ให้แสดงผลเป็น dd/mm/YYYY
 type float,double ให้แสดงผลเป็น x,xxx,xxx.xx (สามารถเขียนได้มากกว่า 2 ข้อที่ยกตัวอย่าง)
 
 Ans.
-SELECT DATE_FORMAT(created_at, "%d/%m/%Y") FROM tb_test
-
-****currency**** 
+SELECT DATE_FORMAT(created_at, "%d/%m/%Y") AS format_date, FORMAT(price, 2) FROM tb_product
 
 ***********************************************************
 7. จงเขียน code function ในการคำนวณผลลัพธ์ใบเสนอราคาโดยหัวข้อมีดังนี้
