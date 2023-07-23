@@ -2,10 +2,26 @@
 1. ให้อธิบายว่าจะใช้วิธีการอะไรได้บ้างในการป้องกัน brute
 force attack หรือเดารหัสผ่านใน login form
 
+Ans.
+ - CAPTCHAs
+ - Two-Factor Authentication
+ - ใช้รหัสผ่านที่ใช้เวลาสุ่มนาน เช่น ต้องประกอบไปด้วย ตัวอักษรพิมพ์เล็ก 
+  ตัวอักษรพิมพ์ใหญ่ อักขระพิเศษ ตัวเลข และมีอย่างน้อย 8 ตัวอักษร
+ - จำกัดจำนวนครั้งในการ login
+ - เก็บ log การ login ถ้า ip address ที่มีความถี่ในการล็อกอินมากกว่าที่กำหนดไว้ก็ให้ ban ip ไม่ให้ login ได้
+
 ***********************************************************
 2. จงเขียนตัวอย่าง sql query ในโค้ด โดยให้มีชุดคำสั่ง
-ที่ช่วยป้องกัน sql injection (ตั้งชื่อตารางชื่อฟิลด์ด้วยตัวเอง
-ได้เลย)
+ที่ช่วยป้องกัน sql injection (ตั้งชื่อตารางชื่อฟิลด์ด้วยตัวเองได้เลย)
+$inputs = [
+  'cartoonist_id' => filter_var( $_GET('cartoonist_id'), FILTER_SANITIZE_NUMBER_INT ),
+  'search' => filter_var( $_GET('search'), FILTER_SANITIZE_STRING )
+];
+
+$stmt = $pdo->prepare("SELECT cartoonists.name, cartoons.* FROM cartoonists 
+                      INNER JOIN cartoons ON (cartoonists.id = cartoons.cartoonist_id)
+                      WHERE cartoonists.id = :id AND cartoons.name LIKE '%:search%'");
+$stmt->execute([':id' => $inputs['cartoonist_id'], ':search' => $inputs['search']]);
 
 
 ***********************************************************
@@ -52,6 +68,10 @@ UPDATE tb_product SET status = '0' WHERE tb_product.shop_id = (SELECT id FROM tb
 type date ให้แสดงผลเป็น dd/mm/YYYY
 type float,double ให้แสดงผลเป็น x,xxx,xxx.xx (สามารถเขียนได้มากกว่า 2 ข้อที่ยกตัวอย่าง)
 
+Ans.
+SELECT DATE_FORMAT(created_at, "%d/%m/%Y") FROM tb_test
+
+****currency**** 
 
 ***********************************************************
 7. จงเขียน code function ในการคำนวณผลลัพธ์ใบเสนอราคาโดยหัวข้อมีดังนี้
@@ -61,12 +81,32 @@ type float,double ให้แสดงผลเป็น x,xxx,xxx.xx (สา�
 ภาษีมูลค่าเพิ่ม 7 %
 ราคารวมสุทธิ
 
-Ans:
-function calculateQuotation(totalPrice, totalDiscount)
-{
-    realPrice = totalPrice - totalDiscount;
-    vat = totalPrice * 7 / 100;
-    netPrice = realPrice + vat;
+Ans: './ข้อที่7.js'
+
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+const readLineAsync = msg => {
+    return new Promise(resolve => {
+        readline.question(msg, userRes => {
+            resolve(userRes);
+        });
+    });
 }
+
+const startApp = async() => {
+    const totalPrice = await readLineAsync(`กรอกราคาสินค้ารวม : `);
+    const totalDiscount = await readLineAsync(`กรอกส่วนลดรวม : `);
+    readline.close();
+    const netPrice = totalPrice - totalDiscount
+    const vat = netPrice * 7 / 100
+    console.log(`ราคาสินค้าหลังส่วนลด : ${netPrice}`)
+    console.log(`ภาษีมูลค่าเพิ่ม 7 % : ${vat}`)
+    console.log(`ราคารวมสุทธิ : ${netPrice + vat}`)
+}
+
+startApp()
 
 ***********************************************************
